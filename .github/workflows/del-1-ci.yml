@@ -1,0 +1,46 @@
+name: Del-1 CI
+
+on:
+  push:
+    paths:
+      - "del-1/**"
+      - ".github/workflows/del-1-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  verify-build-deliver:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        working-directory: ./del-1
+        run: pip install -r requirements.txt
+
+      - name: Verify application
+        working-directory: ./del-1
+        run: python -m pytest -q
+
+      - name: Build Docker image
+        run: docker build -t ghcr.io/${{ github.repository }}/jensenstore-api:${{ github.sha }} ./del-1
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push Docker image
+        run: docker push ghcr.io/${{ github.repository }}/jensenstore-api:${{ github.sha }}
