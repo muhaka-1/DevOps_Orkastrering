@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JensenStore Kubernetes Lab</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f5f7fb;
+      margin: 0;
+      color: #111827;
+    }
+
+    .page {
+      max-width: 960px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .hero {
+      background: white;
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.08);
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #4b5563;
+      line-height: 1.5;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.06);
+    }
+
+    .label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    .value {
+      font-size: 22px;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .pod-card.changed {
+      outline: 3px solid #22c55e;
+      animation: pulse .8s ease-in-out 2;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+
+    .status {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #dcfce7;
+      color: #166534;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .changed-note {
+      margin-top: 10px;
+      color: #166534;
+      font-weight: 700;
+      display: none;
+    }
+
+    .footer {
+      margin-top: 20px;
+      color: #6b7280;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    code {
+      background: #eef2f7;
+      padding: 2px 5px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <section class="hero">
+      <div class="status">JensenStore kör</div>
+      <h1>Attackera JensenStore</h1>
+      <p class="subtitle">
+        Sidan hämtar status från API:t varje sekund. Med flera repliker kan olika requests
+        hanteras av olika Pods. Radera Pods med <code>kubectl delete pod</code> och observera
+        vad Kubernetes gör.
+      </p>
+    </section>
+
+    <section class="grid">
+      <div class="card pod-card" id="podCard">
+        <div class="label">Request hanterades av Pod</div>
+        <div class="value" id="pod">Laddar...</div>
+        <div class="changed-note" id="changedNote">Pod changed!</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Version</div>
+        <div class="value" id="version">-</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Requestnummer i denna Pod</div>
+        <div class="value" id="requestCount">-</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Pod uptime</div>
+        <div class="value"><span id="uptime">-</span> s</div>
+      </div>
+    </section>
+
+    <div class="footer">
+      Testa även <code>/health</code> och <code>/products</code>.
+      Sidan uppdateras automatiskt en gång per sekund.
+    </div>
+  </div>
+
+  <script>
+    let previousPod = null;
+
+    async function refresh() {
+      try {
+        const response = await fetch("/api/info", { cache: "no-store" });
+        const data = await response.json();
+
+        const podCard = document.getElementById("podCard");
+        const changedNote = document.getElementById("changedNote");
+
+        document.getElementById("pod").textContent = data.pod;
+        document.getElementById("version").textContent = data.version;
+        document.getElementById("requestCount").textContent = data.request_count;
+        document.getElementById("uptime").textContent = data.uptime_seconds;
+
+        if (previousPod && previousPod !== data.pod) {
+          podCard.classList.add("changed");
+          changedNote.style.display = "block";
+
+          setTimeout(() => {
+            podCard.classList.remove("changed");
+            changedNote.style.display = "none";
+          }, 2500);
+        }
+
+        previousPod = data.pod;
+      } catch (err) {
+        document.getElementById("pod").textContent = "API ej tillgängligt";
+      }
+    }
+
+    refresh();
+    setInterval(refresh, 1000);
+  </script>
+</body>
+</html>
