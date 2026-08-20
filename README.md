@@ -1,50 +1,148 @@
-DevOps Orkestrering – JensenStore
+# 🚀 DevOps Orkestrering – JensenStore
 
-A complete DevOps exercise demonstrating the progression from application development and CI/CD to container orchestration with Kubernetes.
+[![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python\&logoColor=white)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-REST%20API-black?logo=flask\&logoColor=white)](https://flask.palletsprojects.com/)
+[![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker\&logoColor=white)](https://www.docker.com/)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-Orchestration-326CE5?logo=kubernetes\&logoColor=white)](https://kubernetes.io/)
+[![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-2088FF?logo=githubactions\&logoColor=white)](https://github.com/features/actions)
+[![GHCR](https://img.shields.io/badge/GHCR-Container%20Registry-181717?logo=github\&logoColor=white)](https://github.com/features/packages)
+[![Minikube](https://img.shields.io/badge/Minikube-Local%20Kubernetes-94399E?logo=kubernetes\&logoColor=white)](https://minikube.sigs.k8s.io/)
 
-The project combines:
+> **A practical DevOps project demonstrating CI/CD, containerization, Kubernetes orchestration, automated testing, self-healing, scaling, rolling deployments, and rollback.**
 
-Del 1 – CI/CD: Flask API, automated tests, Docker image creation, and delivery to GitHub Container Registry (GHCR).
+This project was developed as part of my **IoT & Embedded Systems Development studies at JENSEN yrkeshögskola** and is designed to demonstrate practical skills relevant to a **LIA internship in DevOps, Cloud, IoT, Embedded Linux, or software development**.
 
-Del 2 – Kubernetes: Container deployment, Services, replicas, self-healing, scaling, rolling updates, rollback, and health probes using Minikube.
+---
 
-1. Project Overview
+## 👋 Why This Project Matters
 
-The purpose of this project is to demonstrate a practical DevOps workflow for the JensenStore API:
+This repository is more than a school exercise. It demonstrates my ability to take an application through a simplified **software delivery lifecycle**:
 
-Developer
-   │
-   │ git push
-   ▼
-GitHub Repository
-   │
-   ▼
-GitHub Actions
-   │
-   ├── Install dependencies
-   ├── Run automated tests
-   ├── Build Docker image
-   └── Push image to GHCR
-            │
-            ▼
-   GitHub Container Registry
-            │
-            ▼
-       Kubernetes
-         (Del 2)
-            │
-            ├── Deployment
-            ├── 3 replicas
-            ├── Service / NodePort
-            ├── Readiness probe
-            ├── Liveness probe
-            ├── Self-healing
-            ├── Scaling
-            ├── Rolling update
-            └── Rollback
+```text
+        DEVELOPMENT
+             │
+             ▼
+       Git / GitHub
+             │
+             ▼
+      Automated Tests
+             │
+             ▼
+       GitHub Actions
+             │
+             ▼
+       Docker Image
+             │
+             ▼
+     GitHub Container
+         Registry
+             │
+             ▼
+        Kubernetes
+             │
+      ┌──────┼──────┐
+      ▼      ▼      ▼
+    Health  Scale  Recovery
+      │
+      ▼
+ Rolling Update
+      │
+      ▼
+    Rollback
+```
 
-2. Repository Structure
+The focus is on understanding **how modern development and deployment workflows work together**, rather than simply running individual technologies.
 
+---
+
+# 🎯 Project Objectives
+
+The main objectives were to gain hands-on experience with:
+
+* CI/CD automation
+* Automated software testing
+* Docker containerization
+* Container image versioning
+* GitHub Actions
+* GitHub Container Registry
+* Kubernetes Deployments
+* Kubernetes Services
+* Replica management
+* Self-healing workloads
+* Horizontal scaling
+* Readiness and liveness probes
+* Rolling updates
+* Rollback and recovery
+* Kubernetes troubleshooting
+* Infrastructure configuration using YAML
+* Repeatable deployment scripts
+
+---
+
+# 🏗️ Architecture
+
+## End-to-End Architecture
+
+```text
+┌─────────────────────┐
+│     Developer       │
+│                     │
+│  Python / Flask     │
+│  Git / GitHub       │
+└──────────┬──────────┘
+           │
+           │ git push
+           ▼
+┌─────────────────────┐
+│    GitHub Repo      │
+└──────────┬──────────┘
+           │
+           ▼
+┌─────────────────────────────┐
+│      GitHub Actions         │
+│                             │
+│  • Install dependencies     │
+│  • Run pytest               │
+│  • Build Docker image       │
+│  • Authenticate with GHCR   │
+│  • Push image               │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────┐
+│ GitHub Container Registry   │
+│                             │
+│ jensenstore-api:<sha>       │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────────────┐
+│            Kubernetes               │
+│             Minikube                │
+│                                     │
+│       ┌─────────────────────┐       │
+│       │     Deployment      │       │
+│       │     3 replicas      │       │
+│       └─────────┬───────────┘       │
+│                 │                   │
+│       ┌─────────┼─────────┐         │
+│       ▼         ▼         ▼         │
+│     Pod 1     Pod 2     Pod 3       │
+│       │         │         │         │
+│       └─────────┼─────────┘         │
+│                 ▼                   │
+│          Kubernetes Service         │
+│              NodePort               │
+│                                     │
+│     Readiness + Liveness Probes     │
+└─────────────────────────────────────┘
+```
+
+---
+
+# 📁 Repository Structure
+
+```text
 DevOps_Orkestrering/
 │
 ├── .github/
@@ -79,497 +177,617 @@ DevOps_Orkestrering/
 │       └── watch-pods.sh
 │
 └── README.md
+```
 
-3. Del 1 – CI/CD Pipeline
+---
 
-Application
+# 🔄 Del 1 – CI/CD
 
-Del 1 contains a small Flask REST API.
+## Flask REST API
 
-Endpoints
+The first part contains a lightweight Flask API with two endpoints.
 
-Method
-
-Endpoint
-
-Purpose
-
-GET
-
-/
-
-Returns application information and version
-
-GET
-
-/health
-
-Health check endpoint
+| Method | Endpoint  | Purpose                             |
+| ------ | --------- | ----------------------------------- |
+| `GET`  | `/`       | Application information and version |
+| `GET`  | `/health` | Health check                        |
 
 Example:
 
+```json
 {
   "application": "JensenStore API",
   "status": "running",
   "version": "1.0.0"
 }
+```
 
 Health endpoint:
 
+```json
 {
   "status": "healthy"
 }
+```
 
-Automated Tests
+---
 
-The application contains automated tests using pytest.
+## 🧪 Automated Testing
 
-Run locally from the repository root:
+The application uses **pytest** for automated verification.
 
+Run locally:
+
+```powershell
 py -3.11 -m pytest -q .\del-1
+```
 
 Expected result:
 
+```text
 2 passed
+```
 
-The CI pipeline performs the same verification automatically.
+The same test stage is executed automatically by GitHub Actions.
 
-Docker
+This demonstrates the principle:
 
-The application is containerized using Docker and Python 3.12 Slim.
+> **Build only after the application has passed automated verification.**
 
-Build locally:
+---
 
+# 🐳 Docker Containerization
+
+The Flask application is packaged into a Docker image using **Python 3.12 Slim**.
+
+### Build
+
+```powershell
 docker build -t jensenstore-api:del-1 .\del-1
+```
 
-Run the container:
+### Run
 
+```powershell
 docker run --rm -p 8001:8000 jensenstore-api:del-1
+```
 
-Test the API:
+### Test
 
+```powershell
 curl.exe http://localhost:8001/
 curl.exe http://localhost:8001/health
+```
 
-Expected responses:
+Docker provides a consistent runtime environment between development and deployment.
 
-{"application":"JensenStore API","status":"running","version":"1.0.0"}
+---
 
-{"status":"healthy"}
+# ⚙️ GitHub Actions CI/CD
 
-GitHub Actions
+Workflow:
 
-The CI workflow is located at:
-
+```text
 .github/workflows/del-1-ci.yml
+```
 
-The workflow is triggered when changes are pushed to:
+The pipeline performs:
 
-del-1/**
-.github/workflows/del-1-ci.yml
-
-It can also be started manually with workflow_dispatch.
-
-Pipeline stages
-
-Checkout source code
-
-Set up Python 3.12
-
-Install dependencies
-
+```text
+Git Push
+   │
+   ▼
+Checkout
+   │
+   ▼
+Python 3.12
+   │
+   ▼
+Install Dependencies
+   │
+   ▼
 Run pytest
+   │
+   ├── ❌ Test failure → Stop
+   │
+   └── ✅ Tests passed
+            │
+            ▼
+       Docker Build
+            │
+            ▼
+       GHCR Login
+            │
+            ▼
+       Push Image
+```
 
-Build the Docker image
+The Docker image is tagged using the Git commit SHA:
 
-Authenticate with GitHub Container Registry
-
-Push the image to GHCR
-
-The image is tagged using the Git commit SHA:
-
+```text
 ghcr.io/<owner>/<repository>/jensenstore-api:<commit-sha>
+```
 
-This provides an immutable reference to the exact source version used to build the image.
+### Why commit-SHA tagging?
 
-4. Del 2 – Kubernetes Orchestration
+Using the commit SHA creates an immutable relationship between:
 
-Del 2 demonstrates how the JensenStore API can be deployed and managed with Kubernetes.
-
-The Kubernetes environment used during the exercise is Minikube with Docker Desktop.
-
-Kubernetes Resources
-
-The main Kubernetes manifests are located in:
-
-del-2/k8s/
-
+```text
+Git Commit
+     ↓
+Docker Image
+     ↓
 Deployment
+```
 
-deployment.yaml defines the application Deployment and its desired state.
+This makes it easier to identify exactly which source version produced a particular container image.
 
-The exercise uses 3 replicas to demonstrate availability and Kubernetes reconciliation.
+---
 
-Conceptually:
+# ☸️ Del 2 – Kubernetes
 
-JensenStore Deployment
-        │
-        ├── Pod 1
-        ├── Pod 2
-        └── Pod 3
+The second part focuses on container orchestration using:
 
-If one Pod is deleted, Kubernetes automatically creates a replacement.
+* Kubernetes
+* Minikube
+* Docker Desktop
+* kubectl
 
-Service
+The application is deployed as a Kubernetes Deployment with **3 replicas**.
 
-service.yaml exposes the application through a Kubernetes Service.
+```text
+                Deployment
+                    │
+          ┌─────────┼─────────┐
+          ▼         ▼         ▼
+        Pod 1     Pod 2     Pod 3
+```
 
-The exercise uses a NodePort to make the application accessible from outside the Kubernetes cluster.
+---
 
-Example:
+# 🩺 Health Monitoring
 
-Port 80 → NodePort 30080
+The Deployment uses:
 
-Health Probes
+### Readiness Probe
 
-The Kubernetes deployment includes:
+Determines whether the application is ready to receive traffic.
 
-Readiness probe – determines whether a Pod is ready to receive traffic.
+### Liveness Probe
 
-Liveness probe – allows Kubernetes to detect an unhealthy container and restart it.
+Allows Kubernetes to detect an unhealthy application container and restart it.
 
-These probes improve reliability and demonstrate production-oriented Kubernetes practices.
+```text
+                 Pod
+                  │
+          ┌───────┴───────┐
+          ▼               ▼
+     Readiness         Liveness
+       Probe             Probe
+          │               │
+          ▼               ▼
+    Receive traffic    Restart if
+                       unhealthy
+```
 
-5. Kubernetes Operations Demonstrated
+These mechanisms are important in production Kubernetes environments because they help prevent unhealthy workloads from receiving traffic.
 
-The project demonstrates the following Kubernetes concepts.
+---
 
-Desired state
+# 🔁 Self-Healing
 
-The Deployment declares how many application replicas should exist.
+One of the key Kubernetes concepts demonstrated is **reconciliation**.
 
-kubectl get deployment
+Delete a running Pod:
 
-Example:
-
-NAME          READY   UP-TO-DATE   AVAILABLE
-jensenstore   3/3     3            3
-
-Pod self-healing
-
-Delete a Pod:
-
+```powershell
 kubectl delete pod <pod-name>
+```
 
-Then observe:
+Watch the cluster:
 
+```powershell
 kubectl get pods -w
+```
 
-Kubernetes detects that the actual state differs from the desired state and creates a replacement Pod.
+Kubernetes observes that:
 
-Scaling
+```text
+Desired state = 3 Pods
+Actual state  = 2 Pods
+```
 
-The application can be scaled using:
+The controller then creates a replacement:
 
+```text
+Pod deleted
+    │
+    ▼
+Actual state changes
+    │
+    ▼
+Kubernetes reconciliation
+    │
+    ▼
+Replacement Pod
+    │
+    ▼
+3 Pods restored
+```
+
+This demonstrates Kubernetes' self-healing behavior.
+
+---
+
+# 📈 Horizontal Scaling
+
+The application can be scaled without manually creating Pods.
+
+```powershell
 kubectl scale deployment jensenstore --replicas=5
+```
 
 Verify:
 
+```powershell
 kubectl get deployment
 kubectl get pods
+```
 
-The number of Pods should converge to the requested replica count.
+Kubernetes automatically creates the required additional Pods.
 
-Rolling update
+---
 
-The project includes a second application version:
+# 🔄 Rolling Updates
 
+A second application version is provided:
+
+```text
 del-2/k8s/deployment-v2.yaml
+```
 
-This is used to demonstrate a Kubernetes rolling update.
+This allows the project to demonstrate a controlled application update.
 
-Check rollout status:
+Check the rollout:
 
+```powershell
 kubectl rollout status deployment/jensenstore
+```
 
-Check rollout history:
+View deployment history:
 
+```powershell
 kubectl rollout history deployment/jensenstore
+```
 
-Rollback
+The rolling-update strategy allows Kubernetes to replace application instances progressively rather than removing the entire workload at once.
+
+---
+
+# ↩️ Rollback & Recovery
 
 If a deployment needs to be reverted:
 
+```powershell
 kubectl rollout undo deployment/jensenstore
+```
 
 Verify:
 
+```powershell
 kubectl rollout status deployment/jensenstore
+```
 
-This demonstrates how Kubernetes can safely return to a previous ReplicaSet revision.
+View history:
 
-6. Useful Kubernetes Commands
-
-Check the cluster:
-
-kubectl get nodes
-
-Check Deployments:
-
-kubectl get deployments
-
-Check Pods:
-
-kubectl get pods
-
-Watch Pods:
-
-kubectl get pods -w
-
-Check Services:
-
-kubectl get services
-
-Inspect a Deployment:
-
-kubectl describe deployment jensenstore
-
-Inspect a Pod:
-
-kubectl describe pod <pod-name>
-
-View application logs:
-
-kubectl logs <pod-name>
-
-Check Kubernetes events:
-
-kubectl get events --sort-by=.lastTimestamp
-
-Check rollout status:
-
-kubectl rollout status deployment/jensenstore
-
-Check rollout history:
-
+```powershell
 kubectl rollout history deployment/jensenstore
+```
 
-7. Build and Deployment Scripts
+This demonstrates a practical recovery workflow:
 
-The del-2/scripts directory contains helper scripts for common operations:
-
-Script
-
-Purpose
-
-build-v1.sh
-
-Build the first application image
-
-build-v2.sh
-
-Build the second application version
-
-deploy.sh
-
-Deploy the Kubernetes resources
-
-kill-one-pod.sh
-
-Delete one Pod to demonstrate self-healing
-
-watch-pods.sh
-
-Monitor Pod state
-
-cleanup.sh
-
-Remove the Kubernetes resources
-
-The scripts support repeatable execution of the Kubernetes exercise.
-
-8. Verification
-
-The project was verified at multiple levels.
-
-Application
-
-GET /
-GET /health
-
-Both endpoints return successful responses.
-
-Automated tests
-
-2 passed
-
-Docker
-
-The Del-1 image builds successfully:
-
-jensenstore-api:del-1
-
-The container was successfully started and tested through port 8001.
-
-CI/CD
-
-GitHub Actions successfully performs:
-
-Checkout
-   ↓
-Python setup
-   ↓
-Dependency installation
-   ↓
-Automated tests
-   ↓
-Docker build
-   ↓
-GHCR authentication
-   ↓
-Docker image push
-
-Kubernetes
-
-The Kubernetes deployment was verified with:
-
-3 application replicas
-
-Service exposure through NodePort
-
-Pod deletion and automatic recovery
-
-Scaling
-
-Readiness and liveness probes
-
-Rolling updates
-
-Rollout history
-
+```text
+Version 1
+   │
+   ▼
+Version 2
+   │
+   ▼
+Problem detected
+   │
+   ▼
 Rollback
+   │
+   ▼
+Version 1 restored
+```
 
-Kubernetes events and logs
+---
 
-9. Technologies Used
+# 🛠️ Troubleshooting & Observability
 
-Technology
+The project also includes practical Kubernetes troubleshooting.
 
-Purpose
+### Application logs
 
-Python
+```powershell
+kubectl logs <pod-name>
+```
 
-Application development
+### Pod details
 
-Flask
+```powershell
+kubectl describe pod <pod-name>
+```
 
-REST API
+### Deployment details
 
-pytest
+```powershell
+kubectl describe deployment jensenstore
+```
 
-Automated testing
+### Cluster events
 
-Docker
+```powershell
+kubectl get events --sort-by=.lastTimestamp
+```
 
-Containerization
+### Cluster status
 
+```powershell
+kubectl get nodes
+```
+
+These commands were used to inspect workload state, investigate behavior, and verify Kubernetes operations.
+
+---
+
+# 📜 Deployment Scripts
+
+The project includes reusable shell scripts:
+
+| Script            | Function                      |
+| ----------------- | ----------------------------- |
+| `build-v1.sh`     | Build application version 1   |
+| `build-v2.sh`     | Build application version 2   |
+| `deploy.sh`       | Deploy Kubernetes resources   |
+| `kill-one-pod.sh` | Demonstrate self-healing      |
+| `watch-pods.sh`   | Monitor Pod state             |
+| `cleanup.sh`      | Clean up Kubernetes resources |
+
+The scripts make the exercise more reproducible and reduce repetitive manual commands.
+
+---
+
+# 🧰 Technical Highlights
+
+From an engineering perspective, the most important parts of this project are:
+
+### CI/CD
+
+* GitHub Actions workflow automation
+* Automated pytest execution
+* Automated Docker image build
+* GHCR authentication and publishing
+* Commit-SHA image tagging
+
+### Containerization
+
+* Dockerfile-based application packaging
+* Python Slim base image
+* Container networking and port mapping
+* Reproducible runtime environment
+
+### Kubernetes
+
+* Declarative YAML configuration
+* Deployments
+* Replica management
+* Services
+* NodePort
+* Readiness probes
+* Liveness probes
+* Self-healing
+* Horizontal scaling
+* Rolling updates
+* Rollback
+
+### Operations
+
+* `kubectl` troubleshooting
+* Application logs
+* Kubernetes events
+* Deployment inspection
+* Rollout history
+* Repeatable shell scripts
+
+---
+
+# 📊 Verification Results
+
+| Area                   | Result                      |
+| ---------------------- | --------------------------- |
+| Flask API              | ✅ Working                   |
+| `/health` endpoint     | ✅ Healthy                   |
+| Automated tests        | ✅ 2 passed                  |
+| Docker build           | ✅ Successful                |
+| Docker container       | ✅ Verified                  |
+| GitHub Actions         | ✅ CI/CD pipeline configured |
+| GHCR publishing        | ✅ Configured                |
+| Kubernetes Deployment  | ✅ Verified                  |
+| Replicas               | ✅ 3 replicas                |
+| NodePort Service       | ✅ Verified                  |
+| Self-healing           | ✅ Demonstrated              |
+| Scaling                | ✅ Demonstrated              |
+| Readiness probe        | ✅ Configured                |
+| Liveness probe         | ✅ Configured                |
+| Rolling update         | ✅ Demonstrated              |
+| Rollback               | ✅ Demonstrated              |
+| Kubernetes events/logs | ✅ Inspected                 |
+
+---
+
+# 💡 DevOps Skills Demonstrated
+
+This project demonstrates practical experience with:
+
+```text
 Git
-
-Version control
-
-GitHub
-
-Source control and collaboration
-
+ │
+ ├── Version Control
+ ├── Branching / Commits
+ └── Repository Management
+          │
+          ▼
 GitHub Actions
-
-CI/CD automation
-
-GitHub Container Registry
-
-Container image registry
-
+ │
+ ├── CI
+ ├── Automated Testing
+ └── Docker Build / Publish
+          │
+          ▼
+Docker
+ │
+ ├── Images
+ ├── Containers
+ └── Container Networking
+          │
+          ▼
 Kubernetes
+ │
+ ├── Deployments
+ ├── Services
+ ├── Replicas
+ ├── Health Probes
+ ├── Scaling
+ ├── Self-Healing
+ ├── Rolling Updates
+ └── Rollback
+```
 
-Container orchestration
+---
 
-Minikube
+# 🧠 What I Learned
 
-Local Kubernetes cluster
+Through this project, I gained practical understanding of how individual DevOps technologies fit together into a larger delivery pipeline.
 
-Docker Desktop
+In particular, I worked with:
 
-Container runtime
+* Declarative infrastructure
+* Automated software validation
+* Container-based application delivery
+* Kubernetes desired-state management
+* Failure recovery through reconciliation
+* Application health monitoring
+* Deployment strategies
+* Versioned container images
+* Operational troubleshooting
 
-kubectl
+The most important lesson was understanding that **Kubernetes is not simply a way to run containers**. It continuously works to maintain the desired application state and provides mechanisms for availability, scaling, health management, and controlled deployment.
 
-Kubernetes management
+---
 
-10. DevOps Practices Demonstrated
+# 🚀 Possible Next Steps
 
-This project demonstrates several core DevOps principles:
+This project provides a foundation for further development toward production-oriented DevOps and Cloud environments.
 
-Version control with Git and GitHub
+Potential improvements include:
 
-Continuous Integration with GitHub Actions
+* Deploying to a managed Kubernetes service
+* Adding Helm charts
+* Implementing Kubernetes Secrets
+* Adding ConfigMaps
+* Introducing Ingress
+* Adding Prometheus and Grafana monitoring
+* Adding structured application logging
+* Adding security scanning to the CI pipeline
+* Adding Docker image vulnerability scanning
+* Implementing environment-specific deployments
+* Adding infrastructure provisioning with Terraform
+* Introducing GitOps with Argo CD
 
-Automated testing
+---
 
-Containerization
+# 🎓 Relevance to LIA Internship
 
-Container image versioning
+This project reflects the type of practical skills I want to develop further during my **LIA internship**.
 
-Continuous delivery to GHCR
+I am particularly interested in opportunities involving:
 
-Infrastructure configuration using Kubernetes YAML
+* DevOps
+* Cloud infrastructure
+* CI/CD
+* Kubernetes
+* Docker
+* IoT platforms
+* Embedded Linux
+* Edge computing
+* Automation
+* Backend/API development
+* Infrastructure and deployment
 
-Desired-state management
+My background in **IoT & Embedded Systems Development** also gives me an interest in connecting software, devices, networking, and cloud infrastructure.
 
-Self-healing
+---
 
-High availability through replicas
+# 🧑‍💻 About Me
 
-Horizontal scaling
+**Muhammad Jubayer Akanda**
 
-Health monitoring
+IoT & Embedded Systems Development Student
+JENSEN yrkeshögskola, Stockholm
 
-Rolling deployments
+### Technical interests
 
-Rollback and recovery
+```text
+IoT • Embedded Systems • DevOps • Cloud
+Docker • Kubernetes • Linux • CI/CD
+Python • C • C++ • MQTT • REST APIs
+Git • GitHub • Automation • Edge Computing
+```
 
-Repeatable deployment scripts
+I am looking for a **LIA internship where I can contribute to real-world engineering projects while continuing to develop my skills in DevOps, IoT, embedded systems, cloud infrastructure, and software development.**
 
-11. Project Outcome
+---
 
-The project demonstrates a complete path from application source code to an orchestrated container workload:
+# ⭐ Project Summary
 
-Source Code
-    │
-    ▼
-Automated Tests
-    │
-    ▼
-Docker Image
-    │
-    ▼
-GitHub Container Registry
-    │
-    ▼
-Kubernetes Deployment
-    │
-    ▼
-3 Replicas
-    │
-    ├── Health Checks
-    ├── Self-Healing
-    ├── Scaling
-    ├── Rolling Update
-    └── Rollback
+**JensenStore demonstrates an end-to-end DevOps workflow:**
 
-The result is a reproducible DevOps workflow where application changes can be validated automatically, packaged as a container image, stored in a registry, and prepared for Kubernetes-based deployment.
+```text
+     CODE
+       │
+       ▼
+    TEST
+       │
+       ▼
+   CI / CD
+       │
+       ▼
+    DOCKER
+       │
+       ▼
+     GHCR
+       │
+       ▼
+ KUBERNETES
+       │
+       ├── 3 Replicas
+       ├── Health Checks
+       ├── Self-Healing
+       ├── Scaling
+       ├── Rolling Updates
+       └── Rollback
+```
 
-Author
+> **From source code to containerized, tested, and orchestrated workloads.**
 
-Muhammad Jubayer Akanda
+---
 
-DevOps / IoT & Embedded Systems Development
+## 👤 Author
+
+**Muhammad Jubayer Akanda**
+
+**IoT & Embedded Systems Development | DevOps | Cloud | Kubernetes**
+
+📍 Stockholm, Sweden
